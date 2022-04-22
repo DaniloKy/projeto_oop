@@ -5,7 +5,6 @@ class SystemDB extends Singleton{
     public function query($stmt, $data_array = null) {
         // Prepara e executa
         $query = $this->pdo->prepare($stmt);
-        print_r($query);
         $check_exec = $query->execute($data_array);
         // Verifica se a consulta foi processada
         if ($check_exec) {

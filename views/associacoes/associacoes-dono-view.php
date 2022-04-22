@@ -74,7 +74,7 @@ $modelo->sem_limite = false;
                 </td>
                 <td><?= $listaIt['assoc_morada'] ?></td>
                 <td><?= $listaIt['assoc_numContribuinte'] ?></td>
-                <td><?= $listaIt['assoc_quotas_preco'] ?></td>
+                <td><?= $listaIt['assoc_quotas_preco'] ?>$</td>
                 <td><?= $listaIt['user_name'] ?></td>
                 <td>
                     <a href="<?= $edit_uri . $listaIt['assoc_id'] ?>">Editar</a> 
@@ -82,7 +82,7 @@ $modelo->sem_limite = false;
                     <a href="<?= $delete_uri . $listaIt['assoc_id'] ?>">Apagar</a>
                 </td>
                 <td>
-                    <a href="<?= HOME_URI.'/noticias/dono/'.$listaIt['assoc_id'] ?>">Noticias</a> 
+                    <a href="<?= HOME_URI.'/noticias/dono/'.$listaIt['assoc_id'] ?>">Noticias</a>
                     &nbsp;&nbsp;
                     <a href="<?= HOME_URI.'/galeria/dono/'.$listaIt['assoc_id'] ?>">Galeria</a>
                     &nbsp;&nbsp;

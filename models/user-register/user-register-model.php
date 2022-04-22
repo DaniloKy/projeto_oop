@@ -1,6 +1,6 @@
 <?php
 
-class UserRegisterModel{
+class UserRegisterModel extends Pager{
     public $form_data;
     public $form_msg;
     public $db;
@@ -162,8 +162,7 @@ class UserRegisterModel{
             // Elimina o user
             $query = $this->db->delete('socios', 'user_id', $user_id);
             // Redireciona para a página de listagem
-            echo '<meta http-equiv="Refresh" content="0; url=' . HOME_URI . '/user-register/">';
-            echo '<script type="text/javascript">window.location.href = "' . HOME_URI . '/user-register/";</script>';
+            $this->goto_page(HOME_URI);
             return;
         }
     }// del_user

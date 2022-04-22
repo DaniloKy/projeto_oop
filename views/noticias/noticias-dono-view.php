@@ -67,9 +67,9 @@ $modelo->sem_limite = false;
                     <p><img src="<?= HOME_URI . '/views/_uploads/' . $listaIt['noticia_image']; ?>" width="30px"></p>
                 </td>
                 <td>
-                    <a href="<?= $edit_uri.$listaIt['noticia_id'] ?>">Editar</a>
+                    <a href="<?= $dono_uri.$listaIt['assoc_id'].'/edit/'.$listaIt['noticia_id'] ?>">Editar</a>
                     &nbsp;&nbsp;
-                    <a href="<?= $delete_uri . $listaIt['noticia_id'] ?>">Apagar</a>
+                    <a href="<?= $dono_uri.$listaIt['assoc_id'].'/del/'.$listaIt['noticia_id'] ?>">Apagar</a>
                 </td>
             </tr>
             <? $iteratorNoticias->next();  ?>

@@ -8,12 +8,12 @@ abstract class MainModel extends Pager{
     public $controller;
     public $parametros;
     public $userdata;
-    public function upload_imagem(/*$image_db*/) {
+    public function upload_imagem() {
         // Verifica se o ficheiro da imagem existe
-        if (empty($_FILES[$this->table_image/*$image_db*/]))
+        if (empty($_FILES[$this->table_image]))
             return;
         // Configura os dados da imagem
-        $imagem = $_FILES[$this->table_image/*$image_db*/];
+        $imagem = $_FILES[$this->table_image];
         // Nome e extensão
         $nome_imagem = strtolower($imagem['name']);
         $ext_imagem = explode('.', $nome_imagem);
@@ -78,19 +78,21 @@ abstract class MainModel extends Pager{
     abstract public function findQuery($query_limit = null);
     
     public function apaga_table() {
-        if (chk_array($this->parametros, 0) != 'del') {
+        if(!is_numeric(chk_array($this->parametros, 0)))
             return;
-        }
+        if (chk_array($this->parametros, 1) != 'del')
+            return;
         // O segundo parâmetro deverá ser um ID numérico
-        if(!is_numeric(chk_array($this->parametros, 1))) {
+        if(!is_numeric(chk_array($this->parametros, 2)))
             return;
-        }
+        
+        $id = chk_array($this->parametros, 0);
         // Para excluir, o terceiro parâmetro deverá ser "confirma"
-        if (chk_array($this->parametros, 2) != 'confirma') {
+        if (chk_array($this->parametros, 3) != 'confirma') {
             // Configura uma mensagem de confirmação para o user
             $mensagem = '<p class="alert">Tem certeza que deseja apagar a table?</p>';
             $mensagem .= '<p><a href="'.$_SERVER['REQUEST_URI'].'/confirma/">Sim</a> | ';
-            $mensagem .= '<a href="'.$this->uri.'">Não</a></p>';
+            $mensagem .= '<a href="'.$this->uri.$id.'">Não</a></p>';
             // Retorna a mensagem e não excluir
             return $mensagem;
         }
@@ -98,55 +100,64 @@ abstract class MainModel extends Pager{
         if($fetch > 0){
             // Executa a consulta
             $this->db->delete($this->table, $this->table_id, $this->tableId);
-            echo '<meta http-equiv="Refresh" content="0; url='.$this->uri.'">';
-            echo '<script type="text/javascript">window.location.href = "'.$this->uri.'";</script>';
+        $this->goto_page($this->uri.$id);
         }else
             return;
     }
     public function insere_table() {
-        if ('POST' != $_SERVER['REQUEST_METHOD'] || empty($_POST['insere_table']) || empty($_FILES))
+        if ('POST' != $_SERVER['REQUEST_METHOD'] || empty($_POST['insere_table']) || $_FILES[$this->table_image]['size'] == 0)
             return;
-        if (chk_array($this->parametros, 0) == 'edit')
+        if (!is_numeric(chk_array($this->parametros, 0)))
             return;
-        if (is_numeric(chk_array($this->parametros, 1)))
+        if (chk_array($this->parametros, 1) == 'edit')
             return;
+        if (is_numeric(chk_array($this->parametros, 2)))
+            return;
+        $id = chk_array($this->parametros, 0);
+        foreach ($_POST as $key => $value) {
+            if($key != 'assoc_id')
+                // Sem campos em branco
+                if (empty($value)) {
+                    // Configura a mensagem
+                    $this->form_msg = '<p class="form_error">There are empty fields. Data has not been sent.</p>';
+                    return;
+                }
+        }
         // Tenta enviar a imagem
         $imagem = $this->upload_imagem();
         unset($_POST['insere_table']);
         // Insere a imagem em $_POST
         $_POST[$this->table_image] = $imagem;
-        //$query = $this->db->query('SELECT `associacoes`.`assoc_id` FROM `assoc_socios` INNER JOIN `socios` ON `assoc_socios`.`user_id` = `socios`.`user_id` INNER JOIN `associacoes` ON `assoc_socios`.`assoc_id` = `associacoes`.`assoc_id` WHERE `socios`.`user_id` = ? AND `assoc_socios`.`dono` = 1',array($this->userdata['user_id']));
-        $query = $this->db->query('SELECT `assoc_id` FROM listar_assoc_dono WHERE `user_id` = ?',array($this->userdata['user_id']));
-        $fetch = $query->fetch();
-        $_POST['assoc_id'] = $fetch['assoc_id'];
+        /*$query = $this->db->query('SELECT * FROM listar_assoc_dono WHERE `user_id` = ?',array($this->userdata['user_id']));
+        $fetch = $query->fetch();*/
+        $_POST['assoc_id'] = /*$fetch['assoc_id']*/$id;
         // Insere os dados na base de dados
         $query = $this->db->insert($this->table, $_POST);
         // Verifica a consulta
         if ($query){
             // Retorna uma mensagem
             $this->form_msg = '<p class="success">'.$this->table.' atualizada com sucesso!</p>';
-            $this->goto_page($this->uri);
+            $this->goto_page($this->uri.$id);
             return;
         }
         $this->form_msg = '<p class="error">Erro ao enviar dados!</p>';
     }
     
     public function obtem_table() {
+        //verifica se o primeiro ]e um numero (id da assoc)
+        if (!is_numeric(chk_array($this->parametros, 0)))
+            return;
         // Verifica se o primeiro parâmetro é "edit"
-        if (chk_array($this->parametros, 0) != 'edit') {
+        if (chk_array($this->parametros, 1) != 'edit') {
             return;
         }
+        $id = chk_array($this->parametros, 0);
+        $this->form_msg = '<p class="alert">A atualizar</p>';
         // Verifica se o segundo parâmetro é um número
-        if (!is_numeric(chk_array($this->parametros, 1)))
+        if (!is_numeric(chk_array($this->parametros, 2)))
             return;
         // Configura o ID da table
-        $tableId = chk_array($this->parametros, 1);
-        /*
-        Verifica se algo foi enviado e se vem do form que tem o campo
-        insere_table.
-        Se verdadeiro, atualiza os dados conforme a requisição.
-        */
-		 // if 1
+        $tableId = chk_array($this->parametros, 2);
         if ('POST' == $_SERVER['REQUEST_METHOD'] && !empty($_POST['insere_table'])) {
             // Remove o campo insere_table para não gerar problemas com o PDO
             unset($_POST['insere_table']);
@@ -157,6 +168,9 @@ abstract class MainModel extends Pager{
                 // Adiciona a imagem no $_POST
                 $_POST[$this->table_image] = $imagem;
             }
+            /*$query = $this->db->query('SELECT * FROM listar_assoc_dono WHERE `user_id` = ?',array($this->userdata['user_id']));
+            $fetch = $query->fetch();*/
+            $_POST['assoc_id'] = /*$fetch['assoc_id']*/$id;
             // Atualiza os dados
             $query = $this->db->update($this->table, $this->table_id, $tableId, $_POST);
             // Verifica a consulta
@@ -164,9 +178,9 @@ abstract class MainModel extends Pager{
                 // Retorna uma mensagem
                 $this->form_msg = '<p class="success">'.$this->table.' atualizado com sucesso!</p>';
                 //Refresh
-                $this->goto_page($this->uri);
+                $this->goto_page($this->uri.$id);
             }
-        }// // end if 1
+        }
         // Faz a consulta para obter o valor
         $query = $this->db->query('SELECT * FROM '.$this->table.' WHERE '.$this->table_id.' = ? LIMIT 1', array($tableId));
         // Obtém os dados

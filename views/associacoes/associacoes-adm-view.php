@@ -75,7 +75,7 @@ $modelo->sem_limite = false;
                 </td>
                 <td><?= $listaIt['assoc_morada'] ?></td>
                 <td><?= $listaIt['assoc_numContribuinte'] ?></td>
-                <td><?= $listaIt['assoc_quotas_preco'] ?></td>
+                <td><?= $listaIt['assoc_quotas_preco'] ?>$</td>
                 <td><?= $listaIt['user_name'] ?></td>
                 <td><?= $listaIt['user_email'] ?></td>
                 <td>

@@ -9,7 +9,6 @@ $modelo->form_confirma = $modelo->apaga_table();
 $modelo->sem_limite = false;
 // Número de posts por página
 ?>
-<?=$_SESSION['userdata']['user_session_id'] ?>
 <div class="wrap">
     <?
     echo $modelo->form_confirma;

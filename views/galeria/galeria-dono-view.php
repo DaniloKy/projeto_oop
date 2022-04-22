@@ -10,7 +10,6 @@ $modelo->form_confirma = $modelo->apaga_table();
 $modelo->sem_limite = false;
 // Número de posts por página
 ?>
-<?=$_SESSION['userdata']['user_session_id'] ?>
 <div class="wrap">
     <?
     echo $modelo->form_confirma;
@@ -64,9 +63,9 @@ $modelo->sem_limite = false;
                 </td>
                 <td><?= $listaIt['assoc_nome'] ?></td>
                 <td>
-                    <a href="<?=$edit_uri . $listaIt['assoc_id'].$listaIt['image_id'] ?>">Editar</a> 
+                    <a href="<?=$dono_uri.$listaIt['assoc_id'].'/edit/'.$listaIt['image_id'] ?>">Editar</a>
                     &nbsp;&nbsp;
-                    <a href="<?= $delete_uri .$listaIt['assoc_id'].$listaIt['image_id'] ?>">Apagar</a>
+                    <a href="<?=$dono_uri.$listaIt['assoc_id'].'/del/'.$listaIt['image_id'] ?>">Apagar</a>
                 </td>
             </tr>
             <? $iteratorGaleria->next();  ?>

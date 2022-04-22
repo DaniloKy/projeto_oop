@@ -1,5 +1,5 @@
 <?
-    class AssociacoesAdmModel extends MainModel {
+    class AssociacoesAdmModel extends MainAssociacao {
         public $posts_por_pagina = 10;
         public function __construct($db = false, $controller = null) {
             $this->db = $db;
@@ -9,7 +9,7 @@
             $this->uri = HOME_URI.'/associacoes/adm/';
             $this->table = 'associacoes';
             $this->table_id = 'assoc_id';
-            $this->tableId = null;
+            $this->table_image = null;
         }
         public function findQuery($query_limit = null){
             $where = $id = null;

@@ -55,7 +55,7 @@
                 $this->goto_login();
                 return;
             }
-            $modelo = $this->load_model('associacoes/associacoes-dono-model');
+            $modelo = $this->load_model('associacoes/associacoes-criar-model');
             require ABSPATH . '/views/_includes/header.php';
             require ABSPATH . '/views/_includes/menu.php';
             require ABSPATH . '/views/associacoes/associacoes-criar-view.php';

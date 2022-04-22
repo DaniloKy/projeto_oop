@@ -17,7 +17,6 @@ class NoticiasAdmModel extends MainModel {
         $this->table = 'noticias';
         $this->table_id = 'noticia_id';
         $this->table_image = 'noticia_image';
-        $this->tableId = null;
     }
     public function findQuery($query_limit = null){
         $where = $id = $nId = $arr =null;
