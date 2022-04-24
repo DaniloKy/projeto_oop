@@ -6,6 +6,7 @@
             $this->controller = $controller;
             $this->parametros = $this->controller->parametros;
             $this->userdata = $this->controller->userdata;
+            $this->uri = HOME_URI.'/associacoes/criar/';
         }
         public function new_associacao_form() {
             // Configura os dados do formulário
@@ -84,8 +85,10 @@
             if ($query) {
                 // Retorna uma mensagem
                 $this->form_msg = '<p class="success">Permissoes de user atualizado com sucesso!</p>';
+                //
+                $uri = HOME_URI.'/associacoes/criar/';
                 //Refresh
-                $this->goto_page($this->uri);
+                $this->goto_page($uri);
             }
         }// validate_register_form
     }

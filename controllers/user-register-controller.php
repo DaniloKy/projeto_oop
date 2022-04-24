@@ -3,7 +3,7 @@
 class UserRegisterController extends MainController {
 
     public $login_required = true;
-    public $permission_required='user-register';
+    public $permission_required= array('user-register');
     public function index() {
         // Título da página
         $this->title = 'User register';

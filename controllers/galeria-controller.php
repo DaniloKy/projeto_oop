@@ -28,7 +28,7 @@ class GaleriaController extends MainController {
     public function adm() {
         // Page title
         $this->title = 'Gerenciar galeria Adm';
-        $this->permission_required = 'adm-gerir-galeria';
+        $this->permission_required = array('adm-gerir-galeria');
         if (!$this->logged_in) {
             $this->logout();
             $this->goto_login();
@@ -50,7 +50,7 @@ class GaleriaController extends MainController {
     }
     public function dono() {
         $this->title = 'Gerenciar galeria';
-        $this->permission_required = 'gerir-galeria';
+        $this->permission_required = array('gerir-galeria');
         if (!$this->logged_in) {
             $this->logout();
             $this->goto_login();

@@ -28,7 +28,7 @@ class NoticiasController extends MainController {
     public function adm() {
         // Page title
         $this->title = 'Gerenciar noticias Adm';
-        $this->permission_required = 'adm-gerir-noticias';
+        $this->permission_required = array('adm-gerir-noticias');
         if (!$this->logged_in) {
             $this->logout();
             $this->goto_login();
@@ -50,7 +50,7 @@ class NoticiasController extends MainController {
     }
     public function dono() {
         $this->title = 'Gerenciar noticias';
-        $this->permission_required = 'gerir-noticias';
+        $this->permission_required = array('gerir-noticias');
         if (!$this->logged_in) {
             $this->logout();
             $this->goto_login();

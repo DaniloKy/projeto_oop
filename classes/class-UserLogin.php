@@ -150,14 +150,45 @@ class UserLogin extends Pager{
             $this->goto_login();
         }
     }
-    final protected function check_permissions($required = 'any', $user_permissions = array('any')){
+    final protected function check_permissions($required = array('any'), $user_permissions = array('any')){
         if (!is_array($user_permissions))
             return;
-        // Se o user não tiver permissão
-        if (!in_array($required, $user_permissions))
-            // Retorna falso
-            return false;
-        else
-            return true;
+        if (!is_array($required))
+            return;
+        foreach($required as $perm)
+            // Se o user não tiver permissão
+            if (!in_array($perm, $user_permissions))
+                // Retorna falso
+                return false;
+        return true;
+    }
+    //funcao que vai atribuir permissoes ao user
+    public function get_new_permissions($new_permissions = array('any') , $user_permissions = array('any')){
+        //se ja tiver as permissoes
+        if($this->check_permissions($new_permissions, $user_permissions))
+            //retorna
+            return;
+        //para cada permissao
+        foreach($new_permissions as $perm)
+            //adiciona no array das permissoes do user novas permissoes
+            $user_permissions[] = $perm;
+        //serializa
+        $user_permissions = serialize($user_permissions);
+        //retorna em array associativo
+        return array('user_permissions' => $user_permissions);
+    }
+    //funcao que remove permissoes datas
+    public function remove_permissions($this_permissions = array('any') , $user_permissions = array('any')){
+        //para cada permissao
+        foreach($this_permissions as $perm){
+            //procura a chave do array com aquelas permissoes
+            $key = array_search($perm, $user_permissions);
+            //remove do array das permissoes do user
+            unset($user_permissions[$key]);
+        }
+        //serializa
+        $user_permissions = serialize($user_permissions);
+        //retorna em array associativo
+        return array('user_permissions' => $user_permissions);
     }
 }

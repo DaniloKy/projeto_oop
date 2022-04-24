@@ -19,29 +19,33 @@ if ($this->logged_in) {
         <li><a href="<?= HOME_URI; ?>">Home</a></li>
         <li><a href="<?= HOME_URI; ?>/associacoes/">Associações</a></li>
         <li><a href="<?= HOME_URI; ?>/noticias/">Notícias</a></li>
-        <? $this->permission_required = 'gerir-associacoes';
+        <? $this->permission_required = array('ver-associacao');
+        if($this->logged_in && $this->check_permissions($this->permission_required, $this->userdata['user_permissions'])):?>
+            <li><a href="<?= HOME_URI; ?>/associacoes/user/">Minhas Associações</a></li>
+        <? endif; ?>
+        <? $this->permission_required = array('gerir-associacoes');
         if($this->logged_in && $this->check_permissions($this->permission_required, $this->userdata['user_permissions'])):?>
             <li><a href="<?= HOME_URI; ?>/associacoes/dono/">Associações Dono</a></li>
         <? endif; ?>
     </ul>
 </nav>
-<? if($this->logged_in && $this->check_permissions($this->permission_required='admin', $this->userdata['user_permissions'])): ?>
+<? if($this->logged_in && $this->check_permissions($this->permission_required= array('admin'), $this->userdata['user_permissions'])): ?>
 <nav class="menu clearfix">
     <h1>Navbar Admin</h1>
     <ul>
-        <? $this->permission_required = 'adm-gerir-associacoes';
+        <? $this->permission_required = array('adm-gerir-associacoes');
         if($this->logged_in && $this->check_permissions($this->permission_required, $this->userdata['user_permissions'])):?>
             <li><a href="<?= HOME_URI; ?>/associacoes/adm/">Associações Admin</a></li>
         <? endif; ?>
-        <? $this->permission_required = 'adm-gerir-noticias';
+        <? $this->permission_required = array('adm-gerir-noticias');
         if($this->logged_in && $this->check_permissions($this->permission_required, $this->userdata['user_permissions'])):?>
             <li><a href="<?= HOME_URI; ?>/noticias/adm/">Notícias Admin</a></li>
         <? endif; ?>
-        <? $this->permission_required = 'adm-gerir-galeria';
+        <? $this->permission_required = array('adm-gerir-galeria');
         if($this->logged_in && $this->check_permissions($this->permission_required, $this->userdata['user_permissions'])):?>
             <li><a href="<?= HOME_URI; ?>/galeria/adm/">Galeria Admin</a></li>
         <? endif; ?>
-        <? $this->permission_required = 'user-register';
+        <? $this->permission_required = array('user-register');
         if($this->logged_in && $this->check_permissions($this->permission_required, $this->userdata['user_permissions'])):?>
             <li><a href="<?= HOME_URI; ?>/user-register/">User Register</a></li>
         <? endif; ?>

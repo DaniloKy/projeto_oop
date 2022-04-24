@@ -118,8 +118,12 @@ class SystemDB extends Singleton{
         $where = " WHERE `$where_field` = ? ";
         // Concatena tudo
         $stmt .= $where;
-        // O valor que vamos pesquisar para apagar
-        $values = array($where_field_value);
+        $values = array();
+        $values = $where_field_value;
+        //se nao for um array
+        if(!is_array($where_field_value))
+            // O valor que vamos pesquisar para apagar
+            $values = array($where_field_value);
         // Apaga
         $delete = $this->query($stmt, $values);
         // Verifica se a consulta está OK

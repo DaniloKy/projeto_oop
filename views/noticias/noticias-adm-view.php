@@ -28,13 +28,13 @@ $modelo->sem_limite = false;
             <tr>
                 <td>
 	                Titulo: <br>
-	                <input type="text" name="noticia_titulo" value="<?php echo htmlentities(chk_array($modelo->form_data, 'noticia_titulo')); ?>" />
+	                <input type="text" name="noticia_titulo" value="<?= htmlentities(chk_array($modelo->form_data, 'noticia_titulo')); ?>" />
                 </td>
             </tr>
             <tr>
                 <td>
 	                Descricao: <br />
-	                <input type="text" name="noticia_descricao" value="<?php echo htmlentities(chk_array($modelo->form_data, 'noticia_descricao')); ?>" />
+	                <input type="text" name="noticia_descricao" value="<?= htmlentities(chk_array($modelo->form_data, 'noticia_descricao')); ?>" />
                 </td>
             </tr>
             <tr>
@@ -45,7 +45,7 @@ $modelo->sem_limite = false;
             </tr>
             <tr>
                 <td colspan="2">
-                    <?php echo $modelo->form_msg; ?>
+                    <?= $modelo->form_msg; ?>
                     <input type="submit" value="Save" />
                 </td>
             </tr>
@@ -71,16 +71,16 @@ $modelo->sem_limite = false;
             <? while($iteratorAssociacoes->hasNext()): ?>
             <? $listaIt = $iteratorAssociacoes->currentPos();  ?>
             <tr>
-                <td><a href="<?= HOME_URI ?>/noticias/index/<?=$listaIt['assoc_id'].'/'.$listaIt['noticia_id'] ?>"><?php echo $listaIt['noticia_titulo'] ?></a></td>
+                <td><a href="<?= HOME_URI ?>/noticias/index/<?=$listaIt['assoc_id'].'/'.$listaIt['noticia_id'] ?>"><?= $listaIt['noticia_titulo'] ?></a></td>
                 <td><?= $listaIt['noticia_descricao'] ?></td>
                 <td>
-                    <p><img src="<?php echo HOME_URI . '/views/_uploads/' . $listaIt['noticia_image']; ?>" width="30px"></p>
+                    <p><img src="<?= HOME_URI . '/views/_uploads/' . $listaIt['noticia_image']; ?>" width="30px"></p>
                 </td>
                 <td><?= $listaIt['assoc_nome'] ?></td>
                 <td>
-                    <a href="<?php echo $edit_uri . $listaIt['noticia_id'] ?>">Editar</a> 
+                    <a href="<?= $adm_uri.$listaIt['assoc_id'].'/edit/'. $listaIt['noticia_id'] ?>">Editar</a> 
                     &nbsp;&nbsp;
-                    <a href="<?php echo $delete_uri . $listaIt['noticia_id'] ?>">Apagar</a>
+                    <a href="<?= $adm_uri.$listaIt['assoc_id'].'/del/'. $listaIt['noticia_id'] ?>">Apagar</a>
                 </td>
             </tr>
             <? $iteratorAssociacoes->next();  ?>

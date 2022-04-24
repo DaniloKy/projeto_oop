@@ -3,7 +3,10 @@
 class NoticiasDonoModel extends MainModel {
 
     public $posts_por_pagina = 5;
-
+    public $uri = HOME_URI.'/noticias/dono/';
+    public $table = 'noticias';
+    public $table_id = 'noticia_id';
+    public $table_image = 'noticia_image';
     public function __construct($db = false, $controller = null) {
         // Configura o DB (PDO)
         $this->db = $db;
@@ -13,10 +16,6 @@ class NoticiasDonoModel extends MainModel {
         $this->parametros = $this->controller->parametros;
         // Configura os dados do user
         $this->userdata = $this->controller->userdata;
-        $this->uri = HOME_URI.'/noticias/dono/';
-        $this->table = 'noticias';
-        $this->table_id = 'noticia_id';
-        $this->table_image = 'noticia_image';
     }
     public function findQuery($query_limit = null){
         $where = $arr = null;

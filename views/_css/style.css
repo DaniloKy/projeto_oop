@@ -85,6 +85,16 @@ body {
 	color: red !important;
 }
 
+.subscribe{
+	background: #c3eeff;
+	padding: 5px;
+}
+
+.unsubscribe{
+	background: #d0d0d0;
+	padding: 5px;
+}
+
 .alert {
 	background: yellow;
 	color: red;

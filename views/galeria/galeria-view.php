@@ -8,7 +8,7 @@ if (!defined('ABSPATH'))
     $lista = $modelo->list_gallery();
     $iteratorGaleria = new _Iterator($lista);
     ?>
-    <a href="<?= HOME_URI ?>/associacoes/index/">Voltar</a>
+    <a href="<?= HOME_URI ?>/associacoes/index/<?= chk_array($this->parametros, 0)?>">Voltar</a>
     <h1>Lista de galeria</h1>
     <? while($iteratorGaleria->hasNext()): ?>
         <? $listaIt = $iteratorGaleria->currentPos();  ?>

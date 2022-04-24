@@ -5,7 +5,7 @@ if (!defined('ABSPATH'))
 ?>
 <div class="wrap">
     <?
-    $lista = $modelo->list_my_table();
+    $lista = $modelo->list_noticias();
     $iteratorNoticias = new _Iterator($lista);
     ?>
     <h1>Lista de noticias</h1>

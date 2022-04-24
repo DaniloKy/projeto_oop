@@ -1,8 +1,8 @@
 <?
-
 abstract class MainAssociacao extends Pager{
     public $form_data;
     public $form_msg;
+    public $form_enter;
     public $form_confirma;
     public $db;
     public $controller;
@@ -11,49 +11,6 @@ abstract class MainAssociacao extends Pager{
 
     //class abstrata que pega a query de cada modelo específico
     abstract public function findQuery($query_limit = null);
-
-    public function upload_imagem() {
-        // Verifica se o ficheiro da imagem existe
-        if (empty($_FILES[$this->table_image]))
-            return;
-        // Configura os dados da imagem
-        $imagem = $_FILES[$this->table_image];
-        // Nome e extensão
-        $nome_imagem = strtolower($imagem['name']);
-        $ext_imagem = explode('.', $nome_imagem);
-        $ext_imagem = end($ext_imagem);
-        $nome_imagem = preg_replace('/[^a-zA-Z0-9]/' , '', $nome_imagem);
-        $nome_imagem .=  '_' . mt_rand() . '.' . $ext_imagem;
-        // Tipo, nome temporário, erro e tamanho
-        $tipo_imagem = $imagem['type'];
-        $tmp_imagem = $imagem['tmp_name'];
-        $erro_imagem = $imagem['error'];
-        $tamanho_imagem = $imagem['size'];
-
-        // Os mime types permitidos
-        $permitir_tipos = array(
-            'image/bmp',
-            'image/x-windows-bmp',
-            'image/gif',
-            'image/jpeg',
-            'image/pjpeg',
-            'image/png',
-        );
-        // Verifica se o mimetype enviado é permitido
-        if (!in_array($tipo_imagem, $permitir_tipos)) {
-            // Retorna uma mensagem
-            $this->form_msg = '<p class="error">deve enviar uma imagem nos formatos bmp,Gif,jpeg e png.</p>';
-            return;
-        }
-        // Tenta mover o ficheiro enviado
-        if (!move_uploaded_file($tmp_imagem, UP_ABSPATH . '/' . $nome_imagem)) {
-            // Retorna uma mensagem
-            $this->form_msg = '<p class="error">Erro ao enviar imagem.</p>';
-            return;
-        }
-        // Retorna o nome da imagem
-        return $nome_imagem;
-    }// upload_imagem
 
     public function list_my_table() {
         // Configura as variáveis que vamos utilizar
@@ -87,14 +44,13 @@ abstract class MainAssociacao extends Pager{
             $mensagem .= '</form>';
             // Retorna a mensagem e não excluir
             if(!empty($_POST) && $_POST['confirm'] == "Sim" && $_POST['confirm_txt'] == "Confirm")
-                $this->goto_page($_SERVER['REQUEST_URI'].'/confirma\/');
+                $this->goto_page($_SERVER['REQUEST_URI'].'/confirma/');
             else if(!empty($_POST) && $_POST['confirm'] != "Sim")
                 $this->goto_page($this->uri);
             else if(!empty($_POST) && $_POST['confirm_txt'] != "Confirm")
                 $this->form_msg = '<p class="error">Write Confirm</p>';
             return $mensagem;
         }
-        
         $fetch = $this->findQuery(null)->fetchAll();
         if($fetch > 0){
             // Executa a consulta
@@ -119,13 +75,6 @@ abstract class MainAssociacao extends Pager{
         if ('POST' == $_SERVER['REQUEST_METHOD'] && !empty($_POST['insere_table'])) {
             // Remove o campo insere_table para não gerar problemas com o PDO
             unset($_POST['insere_table']);
-            // Tenta enviar a imagem
-            $imagem = $this->upload_imagem();
-            // Verifica se a imagem foi enviada
-            if ($imagem) {
-                // Adiciona a imagem no $_POST
-                $_POST[$this->table_image] = $imagem;
-            }
             // Atualiza os dados
             $query = $this->db->update($this->table, $this->table_id, $tableId, $_POST);
             // Verifica a consulta
@@ -147,6 +96,5 @@ abstract class MainAssociacao extends Pager{
         // Configura os dados do formulário
         $this->form_data = $fetch_data;
     }// obtem_table
-
 }
 ?>

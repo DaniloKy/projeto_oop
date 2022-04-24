@@ -1,15 +1,16 @@
 <?
     class AssociacoesDonoModel extends MainAssociacao {
         public $posts_por_pagina = 10;
+        public $uri = HOME_URI.'/associacoes/dono/';
+        public $table = 'associacoes';
+        public $table_id = 'assoc_id';
+        public $table_image = null;
         public function __construct($db = false, $controller = null) {
             $this->db = $db;
             $this->controller = $controller;
             $this->parametros = $this->controller->parametros;
             $this->userdata = $this->controller->userdata;
-            $this->uri = HOME_URI.'/associacoes/dono/';
-            $this->table = 'associacoes';
-            $this->table_id = 'assoc_id';
-            $this->table_image = null;
+
         }
         public function findQuery($query_limit = null){
             $where = $id = null;

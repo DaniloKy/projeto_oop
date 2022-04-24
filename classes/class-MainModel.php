@@ -8,6 +8,7 @@ abstract class MainModel extends Pager{
     public $controller;
     public $parametros;
     public $userdata;
+
     public function upload_imagem() {
         // Verifica se o ficheiro da imagem existe
         if (empty($_FILES[$this->table_image]))
@@ -100,7 +101,7 @@ abstract class MainModel extends Pager{
         if($fetch > 0){
             // Executa a consulta
             $this->db->delete($this->table, $this->table_id, $this->tableId);
-        $this->goto_page($this->uri.$id);
+            $this->goto_page($this->uri.$id);
         }else
             return;
     }

@@ -18,7 +18,7 @@ $modelo->sem_limite = false;
             <tr>
                 <td>
 	                Titulo da imagem: <br>
-	                <input type="text" name="image_title" value="<?php echo htmlentities(chk_array($modelo->form_data, 'image_title')); ?>" />
+	                <input type="text" name="image_title" value="<?= htmlentities(chk_array($modelo->form_data, 'image_title')); ?>" />
                 </td>
             </tr>
             <tr>
@@ -29,7 +29,7 @@ $modelo->sem_limite = false;
             </tr>
             <tr>
                 <td colspan="2">
-                    <?php echo $modelo->form_msg; ?>
+                    <?= $modelo->form_msg; ?>
                     <input type="submit" value="Save" />
                 </td>
             </tr>
@@ -55,16 +55,16 @@ $modelo->sem_limite = false;
             <? $listaIt = $iteratorGaleria->currentPos(); ?>
             <tr>
                 <td>
-                    <a href="<?= HOME_URI ?>/galeria/index/<?= $listaIt['assoc_id'] ?>"><?php echo $listaIt['image_title'] ?></a>
+                    <a href="<?= HOME_URI ?>/galeria/index/<?= $listaIt['assoc_id'] ?>"><?= $listaIt['image_title'] ?></a>
                 </td>
                 <td>
-                    <p><img src="<?php echo HOME_URI . '/views/_uploads/' . $listaIt['image_src']; ?>" width="30px"></p>
+                    <p><img src="<?= HOME_URI . '/views/_uploads/' . $listaIt['image_src']; ?>" width="30px"></p>
                 </td>
                 <td><?= $listaIt['assoc_nome'] ?></td>
                 <td>
-                    <a href="<?php echo $edit_uri . $listaIt['image_id'] ?>">Editar</a> 
+                    <a href="<?= $adm_uri.$listaIt['assoc_id'].'/edit/'. $listaIt['image_id']?>">Editar</a> 
                     &nbsp;&nbsp;
-                    <a href="<?php echo $delete_uri . $listaIt['image_id'] ?>">Apagar</a>
+                    <a href="<?= $adm_uri.$listaIt['assoc_id'].'/del/'. $listaIt['image_id'] ?>">Apagar</a>
                 </td>
             </tr>
             <? $iteratorGaleria->next();  ?>
