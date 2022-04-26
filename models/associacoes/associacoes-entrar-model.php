@@ -98,7 +98,6 @@
             if(!empty($fetch))
                 return '<h3 class="unsubscribe"><a href="'. HOME_URI.'/associacoes/index/'.chk_array($this->parametros, 0).'/des/">Cancelar inscrição</a></h3>';
             return '<h3 class="subscribe"><a href="'. HOME_URI.'/associacoes/index/'.chk_array($this->parametros, 0).'/insc/">Inscrever-se!</a></h3>';
-        }        
-        //<p class="alert">Para entrar numa associacao inicie sessao!</p>';
+        }
     }
 ?>

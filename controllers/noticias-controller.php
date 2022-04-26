@@ -5,6 +5,7 @@ class NoticiasController extends MainController {
     public $login_required = false;
     public $permission_required;
     public $prev_page = false;
+    public $assoc_noticias = array();
     /**
      * Carrega a página "/views/noticias/index.php"
      */
@@ -12,6 +13,7 @@ class NoticiasController extends MainController {
     public function index() {
         // Título da página
         $this->title = 'Noticias';
+        $this->load_class_noticas('noticias/noticias-adm-model');
         // Carrega o modelo para este view
         $modelo = $this->load_model('noticias/noticias-adm-model');
         /** Carrega os arquivos do view * */
@@ -42,6 +44,7 @@ class NoticiasController extends MainController {
             return;
         }
         // Carrega o modelo para este view
+        $this->load_class_noticas('noticias/noticias-adm-model');
         $modelo = $this->load_model('noticias/noticias-adm-model');
         require ABSPATH . '/views/_includes/header.php';
         require ABSPATH . '/views/_includes/menu.php';
@@ -60,6 +63,7 @@ class NoticiasController extends MainController {
             echo 'Não tem permissões para aceder essa página.';
             return;
         }
+        $this->load_class_noticas('noticias/noticias-dono-model');
         $modelo = $this->load_model('noticias/noticias-dono-model');
         require ABSPATH . '/views/_includes/header.php';
         require ABSPATH . '/views/_includes/menu.php';

@@ -43,8 +43,28 @@ class MainController extends UserLogin {
                 return new $model_name($this->db, $this);
             }
             return;
-        } // load_model
+        }
+    }// load_model
+    public function load_class_assoc($model_name = false) {
+        $modelo = $this->load_model($model_name);
+        foreach($modelo->list_my_table() as $assoc){
+            $associacao = new Associacoes($assoc['assoc_id'],$assoc['assoc_nome'],$assoc['assoc_morada'],$assoc['assoc_numContribuinte'],$assoc['assoc_quotas_preco']);
+            $associacao->addSocio($assoc['user_id'],$assoc['user_name'],$assoc['user_email'],$assoc['user_password'],$assoc['user'], $assoc['user_session_id'], $assoc['user_permissions']);
+            if(method_exists($modelo, 'listMembers'))
+            foreach($modelo->listMembers(chk_array($assoc, 'assoc_id')) as $members){
+                $associacao->addSocio($members['user_id'],$members['user_name'],$members['user_email'],$members['user_password'],$members['user'], $members['user_session_id'], $members['user_permissions']);
+            }
+            $this->associacoes[] = $associacao;
+        }
     }
-// load_model
+    public function load_class_noticas($model_name = false) {
+        $modelo = $this->load_model($model_name);
+        foreach($modelo->list_my_table() as $not){
+            $associacao = new Associacoes($not['assoc_id'],$not['assoc_nome'],null,null,null);
+            $noticias = new Noticias($not['noticia_id'],$not['noticia_titulo'],$not['noticia_descricao'],$not['noticia_image']);
+            $associacao->addNoticia($noticias);
+            $this->assoc_noticias[] = $associacao;
+        }
+    }
 }
 // class MainController

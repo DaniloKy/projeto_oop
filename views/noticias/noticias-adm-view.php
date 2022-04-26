@@ -8,15 +8,12 @@ $edit_uri = $adm_uri . 'edit/';
 $delete_uri = $adm_uri . 'del/';
 // Carrega o método para obter uma noticias
 $modelo->obtem_table();
-// Carrega o método para inserir uma noticias
-$modelo->insere_table();
 // Carrega o método para apagar a noticias
 $modelo->form_confirma = $modelo->apaga_table();
 // Remove o limite de valores da lista de noticias
 $modelo->sem_limite = false;
 // Número de posts por página
 ?>
-<?=$_SESSION['userdata']['user_session_id'] ?>
 <div class="wrap">
     <?php
     // Mensagem de configuração caso o user tente apagar algo
@@ -53,8 +50,8 @@ $modelo->sem_limite = false;
         <input type="hidden" name="insere_table" value="1" />
     </form>
     <?
-    $lista = $modelo->list_my_table();
-    $iteratorAssociacoes = new _Iterator($lista);
+    //$lista = $modelo->list_my_table();
+    $iteratorNoticias = new _Iterator($this->noticias);
     ?>
     <h1>Lista de noticias</h1>
     <table id="tbl-table" class="list-table">
@@ -68,10 +65,12 @@ $modelo->sem_limite = false;
             </tr>
         </thead>
         <tbody>
-            <? while($iteratorAssociacoes->hasNext()): ?>
-            <? $listaIt = $iteratorAssociacoes->currentPos();  ?>
+            <? while($iteratorNoticias->hasNext()): ?>
+            <? $listaIt = $iteratorNoticias->currentPos();  ?>
             <tr>
-                <td><a href="<?= HOME_URI ?>/noticias/index/<?=$listaIt['assoc_id'].'/'.$listaIt['noticia_id'] ?>"><?= $listaIt['noticia_titulo'] ?></a></td>
+                <td>
+                    <a href="<?= HOME_URI ?>/noticias/index/<?=$listaIt['assoc_id'].'/'.$listaIt['noticia_id'] ?>"><?= $listaIt['noticia_titulo'] ?></a>
+                </td>
                 <td><?= $listaIt['noticia_descricao'] ?></td>
                 <td>
                     <p><img src="<?= HOME_URI . '/views/_uploads/' . $listaIt['noticia_image']; ?>" width="30px"></p>
@@ -83,7 +82,7 @@ $modelo->sem_limite = false;
                     <a href="<?= $adm_uri.$listaIt['assoc_id'].'/del/'. $listaIt['noticia_id'] ?>">Apagar</a>
                 </td>
             </tr>
-            <? $iteratorAssociacoes->next();  ?>
+            <? $iteratorNoticias->next();  ?>
             <? endwhile; ?>
         </tbody>
     </table>

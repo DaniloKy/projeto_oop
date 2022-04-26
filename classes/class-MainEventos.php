@@ -1,71 +1,18 @@
 <?
 
-abstract class MainModel extends Pager{
+abstract class MainEventos extends Pager{
     public $form_data;
     public $form_msg;
+    public $form_enter;
     public $form_confirma;
     public $db;
     public $controller;
     public $parametros;
     public $userdata;
 
-    public function upload_imagem() {
-        // Verifica se o ficheiro da imagem existe
-        if (empty($_FILES[$this->table_image]))
-            return;
-        // Configura os dados da imagem
-        $imagem = $_FILES[$this->table_image];
-        // Nome e extensão
-        $nome_imagem = strtolower($imagem['name']);
-        $ext_imagem = explode('.', $nome_imagem);
-        $ext_imagem = end($ext_imagem);
-        $nome_imagem = preg_replace('/[^a-zA-Z0-9]/' , '', $nome_imagem);
-        $nome_imagem .=  '_' . mt_rand() . '.' . $ext_imagem;
-        // Tipo, nome temporário, erro e tamanho
-        $tipo_imagem = $imagem['type'];
-        $tmp_imagem = $imagem['tmp_name'];
-        $erro_imagem = $imagem['error'];
-        $tamanho_imagem = $imagem['size'];
-
-        // Os mime types permitidos
-        $permitir_tipos = array(
-            'image/bmp',
-            'image/x-windows-bmp',
-            'image/gif',
-            'image/jpeg',
-            'image/pjpeg',
-            'image/png',
-        );
-        // Verifica se o mimetype enviado é permitido
-        if (!in_array($tipo_imagem, $permitir_tipos)) {
-            // Retorna uma mensagem
-            $this->form_msg = '<p class="error">deve enviar uma imagem nos formatos bmp,Gif,jpeg e png.</p>';
-            return;
-        }
-        // Tenta mover o ficheiro enviado
-        if (!move_uploaded_file($tmp_imagem, UP_ABSPATH . '/' . $nome_imagem)) {
-            // Retorna uma mensagem
-            $this->form_msg = '<p class="error">Erro ao enviar imagem.</p>';
-            return;
-        }
-        // Retorna o nome da imagem
-        return $nome_imagem;
-    }// upload_imagem
-
     public function list_my_table() {
         // Configura as variáveis que vamos utilizar
         $query_limit = null;
-        // Configura a página a ser exibida
-        /*
-            $pagina = !empty($this->parametros[1]) ? $this->parametros[1] : 1;
-            // A páginação inicia do 0
-            $pagina--;
-            // Configura o número de posts por página
-            $posts_por_pagina = $this->posts_por_pagina;
-            // O offset dos posts da consulta
-            $offset = $pagina * $posts_por_pagina;
-        */
-        // Configura o número de posts por página
         $posts_por_pagina = $this->posts_por_pagina;
         // Esta propriedade foi configurada no modelo paraprevenir limite ou paginação na administração.
         if (empty($this->sem_limite))
@@ -106,7 +53,7 @@ abstract class MainModel extends Pager{
             return;
     }
     public function insere_table() {
-        if ('POST' != $_SERVER['REQUEST_METHOD'] || empty($_POST['insere_table']) || $_FILES[$this->table_image]['size'] == 0)
+        if ('POST' != $_SERVER['REQUEST_METHOD'] || empty($_POST['insere_table']))
             return;
         if (!is_numeric(chk_array($this->parametros, 0)))
             return;
@@ -114,7 +61,6 @@ abstract class MainModel extends Pager{
             return;
         if (is_numeric(chk_array($this->parametros, 2)))
             return;
-        $id = chk_array($this->parametros, 0);
         foreach ($_POST as $key => $value) {
             if($key != 'assoc_id')
                 // Sem campos em branco
@@ -124,22 +70,61 @@ abstract class MainModel extends Pager{
                     return;
                 }
         }
-        // Tenta enviar a imagem
-        $imagem = $this->upload_imagem();
-        unset($_POST['insere_table']);
-        // Insere a imagem em $_POST
-        $_POST[$this->table_image] = $imagem;
+        //pega no primeiro parametro
+        $id = chk_array($this->parametros, 0);
+        //o primeiro parametro ]e o id da assoc
         $_POST['assoc_id'] = $id;
+        //pega na data
+        $data = $_POST['evento_data'];
+        //verificacao se a data do evento ]e so para uma semana depois
+        $data = strtotime($data);
+        echo $data.'<br>';
+        $data_hoje = strtotime('now + 7 days');
+        if($data < $data_hoje){
+            $this->form_msg = '<p class="error">A data tem que ter uma semana de antecedencia.</p>';
+            return;
+        }
+        $data = date('Y-m-d', $data);
+        echo $data;
+        //inverte
+        $nova_data = $this->inverte_data($data);
+        //e insere no $_POST
+        $_POST['evento_data'] = $nova_data;
+        //criacao de um id unico para, buscar o evento acabado de criar
+        $rand = rand(1,9999999999);
+        $evento_unique_id = rand(1,9999999999);
+        $evento_unique_id = md5($evento_unique_id*$rand);
+        $_POST['evento_unique_id'] = $evento_unique_id;
+        //unset no inserte_table
+        print_r($_POST);
+        unset($_POST['insere_table']);
         // Insere os dados na base de dados
         $query = $this->db->insert($this->table, $_POST);
         // Verifica a consulta
-        if ($query){
+        if(!$query)
+            return;
+        $arr = array($evento_unique_id);
+        //vai buscar o id do evento
+        $query = $this->db->query('SELECT `evento_id` FROM `eventos` WHERE `evento_unique_id` = ? LIMIT 1 ', $arr);
+        if(!$query)
+            return;
+        $fetch = $query->fetch(PDO::FETCH_ASSOC);
+        $select_all_members = $this->db->query('SELECT `listar_assoc_socios`.`user_id` FROM `listar_assoc_socios` WHERE `listar_assoc_socios`.`assoc_id` = ? ', array(chk_array($this->parametros, 0)));
+        $members = $select_all_members->fetchAll();
+        print_r($members);
+        foreach($members as $member){
+            $insc = array('user_id' => chk_array($member, 'user_id')  , 'evento_id' => chk_array($fetch, 'evento_id'));
+            $query = $this->db->insert('inscricoes', $insc);
+        }
+        if($query){
             // Retorna uma mensagem
-            $this->form_msg = '<p class="success">'.$this->table.' atualizada com sucesso!</p>';
+            $this->form_msg = '<p class="success">'.$this->table.' atualizada com sucesso!</p>'; 
+            //E vai para a mesma pagina
             $this->goto_page($this->uri.$id);
             return;
-        }
+        }   
         $this->form_msg = '<p class="error">Erro ao enviar dados!</p>';
+        //return;
     }
     
     public function obtem_table() {
@@ -158,25 +143,32 @@ abstract class MainModel extends Pager{
         // Configura o ID da table
         $tableId = chk_array($this->parametros, 2);
         if ('POST' == $_SERVER['REQUEST_METHOD'] && !empty($_POST['insere_table'])) {
+            //pega na data
+            //verificacao se a data do evento ]e so para uma semana depois
+            $data = $_POST['evento_data'];
+            $data = strtotime($data);
+            $data_hoje = strtotime('now + 7 days');
+            //se a data inserida for menor que a data atual mais 7 dias
+            if($data < $data_hoje){
+                $this->form_msg = '<p class="error">A data tem que ter uma semana de antecedencia.</p>';
+                return;
+            }
+            $data = date('Y-m-d', $data);
+            //inverte
+            $nova_data = $this->inverte_data($data);
+            //e insere no $_POST
+            $_POST['evento_data'] = $nova_data;  
             // Remove o campo insere_table para não gerar problemas com o PDO
             unset($_POST['insere_table']);
-            // Tenta enviar a imagem
-            $imagem = $this->upload_imagem();
-            // Verifica se a imagem foi enviada
-            if ($imagem) {
-                // Adiciona a imagem no $_POST
-                $_POST[$this->table_image] = $imagem;
-            }
             $_POST['assoc_id'] = $id;
             // Atualiza os dados
-            print_r($_POST);
             $query = $this->db->update($this->table, $this->table_id, $tableId, $_POST);
             // Verifica a consulta
             if ($query) {
                 // Retorna uma mensagem
                 $this->form_msg = '<p class="success">'.$this->table.' atualizado com sucesso!</p>';
                 //Refresh
-                //$this->goto_page($this->uri.$id);
+                $this->goto_page($this->uri.$id);
             }
         }
         // Faz a consulta para obter o valor
@@ -187,10 +179,41 @@ abstract class MainModel extends Pager{
         if (empty($fetch_data)) {
             return;
         }
+        //inverte a data ao buscar da base de dados
+        $fetch_data['evento_data']= $this->inverte_data($fetch_data['evento_data']);
         // Configura os dados do formulário
         $this->form_data = $fetch_data;
-        print_r($this->form_data);
     }// obtem_table
+
+    public function inverte_data($data = null) {
+        // Configura uma variável para receber a nova data
+        $nova_data = null;
+        // Se a data for enviada
+        if ($data) {
+            // Explode a data por -, /, : ou espaço
+            $data = preg_split('/\-|\/|\s|:/', $data);
+            // Remove os espaços no começo e no fim dos valores
+            $data = array_map('trim', $data);
+            // Cria a data invertida
+            $nova_data .= chk_array($data, 2) . '-';
+            $nova_data .= chk_array($data, 1) . '-';
+            $nova_data .= chk_array($data, 0);
+            // Configura a hora
+            if (chk_array($data, 3)) {
+                $nova_data .= ' ' . chk_array($data, 3);
+            }
+            // Configura os minutos
+            if (chk_array($data, 4)) {
+                $nova_data .= ':' . chk_array($data, 4);
+            }
+            // Configura os segundos
+            if (chk_array($data, 5)) {
+                $nova_data .= ':' . chk_array($data, 5);
+            }
+        }
+        // Retorna a nova data
+        return $nova_data;
+    }// inverte_data
 }// MainModel
 
 ?>

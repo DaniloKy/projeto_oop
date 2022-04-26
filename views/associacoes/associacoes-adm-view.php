@@ -50,8 +50,7 @@ $modelo->sem_limite = false;
         <input type="hidden" name="insere_table" value="1" />
     </form>
     <?
-    $lista = $modelo->list_my_table();
-    $iteratorAssociacoes = new _Iterator($lista);
+    $iteratorAssociacoes = new _Iterator($this->associacoes);
     ?>
     <h1>Lista de associacoes</h1>
     <table id="tbl-table" class="list-table">
@@ -71,17 +70,17 @@ $modelo->sem_limite = false;
             <? $listaIt = $iteratorAssociacoes->currentPos(); ?>
             <tr>
                 <td>
-                    <a href="<?php echo HOME_URI ?>/associacoes/index/<?php echo $listaIt['assoc_id'] ?>"><?php echo $listaIt['assoc_nome'] ?></a>
+                    <a href="<?php echo HOME_URI ?>/associacoes/index/<?php echo $listaIt->getId() ?>"><?php echo $listaIt->getNome() ?></a>
                 </td>
-                <td><?= $listaIt['assoc_morada'] ?></td>
-                <td><?= $listaIt['assoc_numContribuinte'] ?></td>
-                <td><?= $listaIt['assoc_quotas_preco'] ?>$</td>
-                <td><?= $listaIt['user_name'] ?></td>
-                <td><?= $listaIt['user_email'] ?></td>
+                <td><?= $listaIt->getMorada() ?></td>
+                <td><?= $listaIt->getNumContribuinte() ?></td>
+                <td><?= $listaIt->getAssoQuotas() ?>$</td>
+                <td><?= $listaIt->socio->getNomeSocio() ?></td>
+                <td><?= $listaIt->socio->getEmailSocio() ?></td>
                 <td>
-                    <a href="<?php echo $edit_uri . $listaIt['assoc_id'] ?>">Editar</a> 
+                    <a href="<?php echo $edit_uri . $listaIt->getId() ?>">Editar</a> 
                     &nbsp;&nbsp;
-                    <a href="<?php echo $delete_uri . $listaIt['assoc_id'] ?>">Apagar</a>
+                    <a href="<?php echo $delete_uri . $listaIt->getId() ?>">Apagar</a>
                 </td>
             </tr>
             <? $iteratorAssociacoes->next();  ?>

@@ -19,7 +19,7 @@ class NoticiasDonoModel extends MainModel {
     }
     public function findQuery($query_limit = null){
         $where = $arr = null;
-        $mainQuery = 'SELECT `noticias`.* FROM listar_assoc_dono INNER JOIN `noticias` ON `noticias`.`assoc_id` = listar_assoc_dono.`assoc_id`  ';
+        $mainQuery = 'SELECT `noticias`.*,`listar_assoc_dono`.* FROM listar_assoc_dono INNER JOIN `noticias` ON `noticias`.`assoc_id` = listar_assoc_dono.`assoc_id`  ';
         $where = ' WHERE `user_id` = '.$this->userdata['user_id'].' ';
         if(chk_array($this->parametros, 1) == 'del'){
             $this->tableId = (int) chk_array($this->parametros, 2);

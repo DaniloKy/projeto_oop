@@ -45,7 +45,7 @@ $modelo->sem_limite = false;
     </form>
     <?
     $lista = $modelo->list_my_table();
-    $iteratorNoticias = new _Iterator($lista);
+    $iteratorAssoc_Noticias = new _Iterator($this->assoc_noticias);
     ?>
     <h1>Minhas noticias</h1>
     <table id="tbl-table" class="list-table">
@@ -58,22 +58,27 @@ $modelo->sem_limite = false;
             </tr>
         </thead>
         <tbody>
+        <? while($iteratorAssoc_Noticias->hasNext()): ?>
+            <? $listaIt = $iteratorAssoc_Noticias->currentPos();?>
+            <? $iteratorNoticias = new _Iterator($listaIt->noticias); ?>
             <? while($iteratorNoticias->hasNext()): ?>
-            <? $listaIt = $iteratorNoticias->currentPos();  ?>
-            <tr>
-                <td><a href="<?= HOME_URI ?>/noticias/index/<?=$listaIt['assoc_id'].'/'.$listaIt['noticia_id'] ?>"><?= $listaIt['noticia_titulo'] ?></a></td>
-                <td><?= $listaIt['noticia_descricao'] ?></td>
-                <td>
-                    <p><img src="<?= HOME_URI . '/views/_uploads/' . $listaIt['noticia_image']; ?>" width="30px"></p>
-                </td>
-                <td>
-                    <a href="<?= $dono_uri.$listaIt['assoc_id'].'/edit/'.$listaIt['noticia_id'] ?>">Editar</a>
-                    &nbsp;&nbsp;
-                    <a href="<?= $dono_uri.$listaIt['assoc_id'].'/del/'.$listaIt['noticia_id'] ?>">Apagar</a>
-                </td>
-            </tr>
+                <? $listaNot = $iteratorNoticias->currentPos();?>
+                <tr>
+                    <td><a href="<?= HOME_URI ?>/noticias/index/<?=$listaIt->getId().'/'.$listaNot->getIdNot() ?>"><?= $listaNot->getTituloNot() ?></a></td>
+                    <td><?= $listaNot->getDescNot() ?></td>
+                    <td>
+                        <p><img src="<?= HOME_URI . '/views/_uploads/' . $listaNot->getImagemNot(); ?>" width="30px"></p>
+                    </td>
+                    <td>
+                        <a href="<?= $dono_uri.$listaIt->getId().'/edit/'.$listaNot->getIdNot() ?>">Editar</a>
+                        &nbsp;&nbsp;
+                        <a href="<?= $dono_uri.$listaIt->getId().'/del/'.$listaNot->getIdNot() ?>">Apagar</a>
+                    </td>
+                </tr>
             <? $iteratorNoticias->next();  ?>
             <? endwhile; ?>
+        <? $iteratorAssoc_Noticias->next();  ?>
+        <? endwhile; ?>
         </tbody>
     </table>
 </div>

@@ -4,15 +4,13 @@
 if ($this->login_required && !$this->logged_in)
     return;
 if ($this->logged_in) {
-   echo "BemVindo: " . $this->user_name;
+    echo "BemVindo: " . $this->user_name;
     ?>
     <a href="<?= HOME_URI; ?>/login/delete">Logout</a>
     <? } else {
     ?>
     <a href="<?= HOME_URI; ?>/login">Login</a>
-    <?
-}
-?>
+    <?}?>
 
 <nav class="menu clearfix">
     <ul>
@@ -44,6 +42,10 @@ if ($this->logged_in) {
         <? $this->permission_required = array('adm-gerir-galeria');
         if($this->logged_in && $this->check_permissions($this->permission_required, $this->userdata['user_permissions'])):?>
             <li><a href="<?= HOME_URI; ?>/galeria/adm/">Galeria Admin</a></li>
+        <? endif; ?>
+        <? $this->permission_required = array('adm-gerir-eventos');
+        if($this->logged_in && $this->check_permissions($this->permission_required, $this->userdata['user_permissions'])):?>
+            <li><a href="<?= HOME_URI; ?>/eventos/adm/">Eventos Admin</a></li>
         <? endif; ?>
         <? $this->permission_required = array('user-register');
         if($this->logged_in && $this->check_permissions($this->permission_required, $this->userdata['user_permissions'])):?>

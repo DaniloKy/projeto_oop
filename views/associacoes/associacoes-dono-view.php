@@ -49,8 +49,7 @@ $modelo->sem_limite = false;
         <input type="hidden" name="insere_table" value="1" />
     </form>
     <?
-    $lista = $modelo->list_my_table();
-    $iteratorAssociacoes = new _Iterator($lista);
+    $iteratorAssociacoes = new _Iterator($this->associacoes);
     ?>
     <h1>Minha associacao</h1>
     <table id="tbl-table" class="list-table">
@@ -70,55 +69,50 @@ $modelo->sem_limite = false;
             <? $listaIt = $iteratorAssociacoes->currentPos();  ?>
             <tr>
                 <td>
-                    <a href="<?= HOME_URI ?>/associacoes/index/<?=$listaIt['assoc_id'] ?>"><?= $listaIt['assoc_nome'] ?></a>
+                    <a href="<?= HOME_URI ?>/associacoes/index/<?=$listaIt->getId() ?>"><?= $listaIt->getNome() ?></a>
                 </td>
-                <td><?= $listaIt['assoc_morada'] ?></td>
-                <td><?= $listaIt['assoc_numContribuinte'] ?></td>
-                <td><?= $listaIt['assoc_quotas_preco'] ?>$</td>
-                <td><?= $listaIt['user_name'] ?></td>
+                <td><?= $listaIt->getMorada() ?></td>
+                <td><?= $listaIt->getNumContribuinte() ?></td>
+                <td><?= $listaIt->getAssoQuotas() ?>$</td>
+                <td><?= $listaIt->getFirstSocio()->getNomeSocio() ?></td>
                 <td>
-                    <a href="<?= $edit_uri . $listaIt['assoc_id'] ?>">Editar</a> 
+                    <a href="<?= $edit_uri . $listaIt->getId() ?>">Editar</a> 
                     &nbsp;&nbsp;
-                    <a href="<?= $delete_uri . $listaIt['assoc_id'] ?>">Apagar</a>
+                    <a href="<?= $delete_uri . $listaIt->getId() ?>">Apagar</a>
                 </td>
                 <td>
-                    <a href="<?= HOME_URI.'/noticias/dono/'.$listaIt['assoc_id'] ?>">Noticias</a>
+                    <a href="<?= HOME_URI.'/noticias/dono/'.$listaIt->getId() ?>">Noticias</a>
                     &nbsp;&nbsp;
-                    <a href="<?= HOME_URI.'/galeria/dono/'.$listaIt['assoc_id'] ?>">Galeria</a>
+                    <a href="<?= HOME_URI.'/galeria/dono/'.$listaIt->getId() ?>">Galeria</a>
                     &nbsp;&nbsp;
-                    <a href="<?= HOME_URI.'/eventos/dono/'.$listaIt['assoc_id'] ?>">Eventos</a>
+                    <a href="<?= HOME_URI.'/eventos/dono/'.$listaIt->getId() ?>">Eventos</a>
                 </td>
             </tr>
-            <? $iteratorAssociacoes->next();  ?>
-            <? endwhile; ?>
-        </tbody>
-    </table>
-    <!-- ***************MEMBROS**************-->
-    <?
-    //$lista = $modelo->list_members('associacoes', 'assoc_id');
-    //$iteratorAssociacoes = new _Iterator($lista);
-    ?>
-    <h1>Membros da associacao</h1>
-    <table id="tbl-table" class="list-table">
-        <thead>
-            <tr>
-                <th>Nome</th>
-                <th>Email</th>
-                <th>Quotas pagas????</th>
-                <th>edit</th>
-            </tr>
-        </thead>
-        <tbody>
-            <? while($iteratorAssociacoes->hasNext()): ?>
-            <? $listaIt = $iteratorAssociacoes->currentPos();  ?>
-            <tr>
-                <td><?=$listaIt['user_nome'] ?></a></td>
-                <td><?= $listaIt['user_email'] ?></td>
-                <td><?//= $listaIt[''] ?>Quota</td>
-                <td>
-                    <a href="<?= $delete_uri . $listaIt['assoc_id'] ?>">Expulsar</a>
-                </td>
-            </tr>
+            <? $iteratorMembers = new _Iterator($listaIt->socio); ?>
+            <? $modelo->form_msg = $modelo->expulsar_member(); ?>
+            <h3>Membros da associacao</h3>
+            <table id="tbl-table" class="list-table">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>edit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <? while($iteratorMembers->hasNext()): ?>
+                    <? $members = $iteratorMembers->currentPos();  ?>
+                    <tr>
+                        <td><?= $members->getNomeSocio()?></a></td>
+                        <td><?= $members->getEmailSocio()?></td>
+                        <td>
+                            <a href="<?= HOME_URI.'/associacoes/dono/exp/'.$listaIt->getId().'/'.$members->getIdSocio() ?>">Expulsar</a>
+                        </td>
+                    </tr>
+                    <? $iteratorMembers->next();  ?>
+                    <? endwhile; ?>
+                </tbody>
+            </table>
             <? $iteratorAssociacoes->next();  ?>
             <? endwhile; ?>
         </tbody>
